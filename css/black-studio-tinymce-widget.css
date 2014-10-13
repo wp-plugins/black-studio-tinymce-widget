@@ -8,6 +8,12 @@
 	right: 18px;
 }
 
+.rtl .bstw-links {
+	text-align: left;
+	right: auto;
+	left: 18px;
+}
+
 .bstw-links .icon16:before {
 	padding: 0;
 }
@@ -18,12 +24,32 @@
 	margin: -6px -8px 0 -2px;
 }
 
+.rtl .bstw-links .icon16 {
+	float: left;
+	margin: -6px -2px 0 -8px;
+}
+
 .bstw-links .bstw-links-list {
 	display: none;
 }
 
 .bstw-links a {
 	text-decoration: none;
+}
+
+.bstw-loading {
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom:0;
+	background-color:white;
+	background-image: url(../../../../wp-admin/images/loading.gif);
+	background-position: center center;
+	background-repeat: no-repeat;
+	z-index: 100000;
+	display: none;
+	opacity: 0.5;
 }
 
 #wp-black-studio-tinymce-widget-wrap {

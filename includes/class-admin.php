@@ -122,6 +122,7 @@ if ( ! class_exists( 'Black_Studio_TinyMCE_Admin' ) ) {
 				add_action( 'black_studio_tinymce_editor', array( $this, 'editor' ), 10, 3 );
 				add_action( 'black_studio_tinymce_before_editor', array( $this, 'display_links' ) ); // consider donating if you remove links
 				add_filter( 'wp_editor_settings', array( $this, 'editor_settings' ), 10, 2 );
+				add_filter( 'tiny_mce_before_init', array( $this, 'tinymce_fix_rtl' ) );
 				do_action( 'black_studio_tinymce_load' );
 			}
 		}
@@ -155,7 +156,7 @@ if ( ! class_exists( 'Black_Studio_TinyMCE_Admin' ) ) {
 		 */
 		public function admin_print_styles() {
 			wp_enqueue_style( 'wp-jquery-ui-dialog' );
-			wp_enqueue_style( 'editor-buttons' );
+			// wp_enqueue_style( 'editor-buttons' );
 			$this->enqueue_style();
 		}
 
@@ -185,8 +186,6 @@ if ( ! class_exists( 'Black_Studio_TinyMCE_Admin' ) ) {
 		 * Enqueue header scripts
 		 *
 		 * @uses wp_enqueue_script()
-		 * @uses Black_Studio_TinyMCE_Plugin::enqueue_script()
-		 * @uses Black_Studio_TinyMCE_Plugin::localize_script()
 		 * @uses do_action()
 		 *
 		 * @return void
@@ -250,8 +249,6 @@ if ( ! class_exists( 'Black_Studio_TinyMCE_Admin' ) ) {
 		/**
 		 * Enqueue footer scripts
 		 *
-		 * @uses wp_editor()
-		 *
 		 * @return void
 		 * @since 2.0.0
 		 */
@@ -285,7 +282,7 @@ if ( ! class_exists( 'Black_Studio_TinyMCE_Admin' ) ) {
 		public function editor_settings( $settings, $editor_id ) {
 			if ( strstr( $editor_id, 'black-studio-tinymce' ) ) {
 				$settings['default_editor'] = 'tmce';
-				$settings['tinymce'] = array( 'wp_skip_init' => true );
+				$settings['tinymce'] = array( 'wp_skip_init' => true, 'add_unload_trigger' => false );
 				$settings['editor_height'] = 350;
 			}
 			return $settings;
@@ -353,9 +350,13 @@ if ( ! class_exists( 'Black_Studio_TinyMCE_Admin' ) ) {
 		/**
 		 * Show row meta on the plugin screen
 		 *
+		 * @uses esc_html()
+		 * @uses esc_url()
+		 *
 		 * @param string[] $links
 		 * @param string $file
 		 * @return string[]
+		 * @since 2.0.0
 		 */
 		public function plugin_row_meta( $links, $file ) {
 			if ( $file == bstw()->get_basename() ) {
@@ -366,6 +367,20 @@ if ( ! class_exists( 'Black_Studio_TinyMCE_Admin' ) ) {
 			return $links;
 		}
 
+		/**
+		 * Fix for rtl languages
+		 *
+		 * @param mixed[] $settings
+		 * @return mixed[]
+		 * @since 2.1.0
+		 */
+		public function tinymce_fix_rtl( $settings ) {
+			if ( is_rtl() && isset( $settings['plugins'] ) && ',directionality' == $settings['plugins'] ) {
+				unset( $settings['plugins'] );
+			}
+			return $settings;
+		}
+
 	} // END class Black_Studio_TinyMCE_Admin
 
-} // class_exists check
+} // END class_exists check
