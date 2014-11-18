@@ -45,7 +45,7 @@ var bstw;
 						tinyMCEPreInit.mceInit[id] = tinyMCEPreInit.mceInit['black-studio-tinymce-widget'];
 						tinyMCEPreInit.mceInit[id].selector = '#' + id;
 					}
-					if ( ! this.is_tinymce_active() ) {
+					if ( ! this.is_tinymce_active() && this.get_mode() === 'visual' ) {
 						tinyMCEPreInit.mceInit[id].setup = function( ed ) {
 							// Real time preview (Theme customizer)
 							ed.on( 'keyup change', function() {
@@ -69,7 +69,6 @@ var bstw;
 			deactivate: function() {
 				if ( ! $( '#' + id ).hasClass( 'activating' ) ) {
 					if ( this.is_tinymce_active() ) {
-						this.update_content();
 						tinymce.get( id ).remove();
 					}
 					if ( this.is_tinymce_configured() ) {
